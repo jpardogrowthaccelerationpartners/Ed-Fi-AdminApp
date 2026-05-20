@@ -120,7 +120,7 @@ export class ArtifactService {
     fs.writeFileSync(
       bruFile,
       'vars {\n' +
-        '  baseUrl: https://localhost/v7-multi-api/tenant1\n' +
+        '  baseUrl: https://localhost/odsv7-adminv2-multi-api/tenant1\n' +
         '  resourceBaseUrl: {{baseUrl}}/data/v3\n' +
         '  oauthUrl: {{baseUrl}}/oauth/token\n' +
         '  edFiClientId: <replace_with_edfiClientId_parameter>\n' +

@@ -423,7 +423,7 @@ The `SIS/environments/<environment-name>.bru` file:
 
 ```json
 vars {
-  baseUrl: https://localhost/v7-multi-api/tenant1
+  baseUrl: https://localhost/odsv7-adminv2-multi-api/tenant1
   resourceBaseUrl: {{baseUrl}}/data/v3
   oauthUrl: {{baseUrl}}/oauth/token
   edFiClientName: {{process.env.EDFI_CLIENT_NAME}}
@@ -521,7 +521,7 @@ Based on the [POC 2 - Bruno Integration](./CERT-220.md#poc-2-bruno-integrator-re
 
 *Expose New API:* Replace POC endpoint `/api/certification/run` with `/api/certification/validate` to validate certification scenarios. The API will receive the following parameters:
 
-- odsURL (e.g. https://localhost/v7-multi-api/tenant1)
+- odsURL (e.g. <https://localhost/odsv7-adminv2-multi-api/tenant1>)
 - edfiClientId
 - edfiClientSecret
 - scenariosVersion

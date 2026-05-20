@@ -2,8 +2,8 @@
 # It assumes there are two different tenants named "tenant1" and "tenant2". Each has
 # only one ODS instance.
 
-@adminapi_url=https://localhost/v7-single-adminapi
-@odsapi_url=https://localhost/v7-single-api
+@adminapi_url=https://localhost/odsv7-adminv2-single-adminapi
+@odsapi_url=https://localhost/odsv7-adminv2-single-api
 @adminapi_client=adminapi_client
 @adminapi_secret=adminapi_SECRET_2025_rftyguhijkotgyhuijok
 
