@@ -1293,7 +1293,7 @@ export class AdminApiServiceV2 {
             // Call the tenant details endpoint with tenant header
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const response = await client
-              .get<any>(`tenants/${tenantName}/OdsInstances/edOrgs`, {
+              .get<any>(`tenants/${tenantName}/odsInstances/edOrgs`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                   tenant: tenantName, // Add tenant header for multi-tenant API

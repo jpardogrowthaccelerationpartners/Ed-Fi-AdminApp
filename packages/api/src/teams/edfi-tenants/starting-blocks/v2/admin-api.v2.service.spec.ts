@@ -57,9 +57,9 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
   });
 
   describe('getTenants', () => {
-    it('should successfully return tenants in multi-tenant mode with EdOrgs and OdsInstances', async () => {
+    it('should successfully return tenants in multi-tenant mode with EdOrgs and odsInstances', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       // Mock root endpoint response with multi-tenant mode
       const mockRootResponse = {
         data: {
@@ -150,13 +150,13 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
           Authorization: 'Bearer mock-token',
         }),
       }));
-      expect(mockApiGet).toHaveBeenCalledWith('tenants/tenant-one/OdsInstances/edOrgs', expect.objectContaining({
+      expect(mockApiGet).toHaveBeenCalledWith('tenants/tenant-one/odsInstances/edOrgs', expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer token-tenant-one',
           tenant: 'tenant-one',
         }),
       }));
-      expect(mockApiGet).toHaveBeenCalledWith('tenants/tenant-two/OdsInstances/edOrgs', expect.objectContaining({
+      expect(mockApiGet).toHaveBeenCalledWith('tenants/tenant-two/odsInstances/edOrgs', expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer token-tenant-two',
           tenant: 'tenant-two',
@@ -204,7 +204,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should use default tenant in single-tenant mode (multitenantMode: false)', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       // Mock root endpoint response with single-tenant mode
       const mockRootResponse = {
         data: {
@@ -257,7 +257,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
       const result = await service.getTenants(environment);
 
       expect(result).toHaveLength(1);
-      expect(mockApiGet).toHaveBeenCalledWith('tenants/default/OdsInstances/edOrgs', expect.objectContaining({
+      expect(mockApiGet).toHaveBeenCalledWith('tenants/default/odsInstances/edOrgs', expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer token-default',
           tenant: 'default',
@@ -271,7 +271,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should handle tenant details endpoint failure gracefully', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {
@@ -317,9 +317,9 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should fallback to default tenant when root endpoint returns 404', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const axiosError = createAxiosError(404, 'Not Found');
-      
+
       // Mock axios client for root endpoint to return 404
       jest.spyOn(require('axios'), 'create').mockReturnValue({
         get: jest.fn().mockRejectedValue(axiosError),
@@ -340,9 +340,9 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should use "Default Tenant" when environment name is empty and endpoint returns 404', async () => {
       const envWithoutName = { ...mockSbEnvironment, name: '' } as SbEnvironment;
-      
+
       const axiosError = createAxiosError(404, 'Not Found');
-      
+
       // Mock axios client for root endpoint to return 404
       jest.spyOn(require('axios'), 'create').mockReturnValue({
         get: jest.fn().mockRejectedValue(axiosError),
@@ -358,9 +358,9 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should throw error for non-404 errors (auth, network, server errors)', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const axiosError = createAxiosError(401, 'Unauthorized');
-      
+
       // Mock axios client for root endpoint to return 401
       jest.spyOn(require('axios'), 'create').mockReturnValue({
         get: jest.fn().mockRejectedValue(axiosError),
@@ -376,7 +376,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should return TenantDto array with correct structure', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {
@@ -438,7 +438,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should set ODS instance ID to null when id is missing', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {
@@ -491,7 +491,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should use fallback name "Unknown ODS Instance" for ODS instances with missing names', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {
@@ -546,7 +546,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should use default tenant when tenancy.tenants array is empty', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {
@@ -596,7 +596,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should handle authentication by calling login when token is not cached', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {
@@ -653,7 +653,7 @@ describe('AdminApiServiceV2 - Extension Methods', () => {
 
     it('should populate instanceId and instanceName in education organizations from parent ODS instance', async () => {
       const environment = mockSbEnvironment as SbEnvironment;
-      
+
       const mockRootResponse = {
         data: {
           tenancy: {

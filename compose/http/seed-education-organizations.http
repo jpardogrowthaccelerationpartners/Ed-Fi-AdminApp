@@ -12,8 +12,8 @@
 
 # ── Variables ────────────────────────────────────────────────────────────────
 
-@adminapi_url     = https://localhost/v7-multi-adminapi
-@odsapi_url       = https://localhost/v7-multi-api
+@adminapi_url     = https://localhost/odsv7-adminv2-multi-adminapi
+@odsapi_url       = https://localhost/odsv7-adminv2-multi-api
 @tenant           = tenant1
 
 # Admin API OAuth client (registered in v7.http or Step 1 below)
