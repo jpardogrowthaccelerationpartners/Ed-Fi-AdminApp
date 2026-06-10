@@ -47,6 +47,7 @@ describe('SbSyncConsumer — SYNC_SCHEDULER_CHNL', () => {
     };
 
     jobQueue = {
+      createQueue: jest.fn().mockResolvedValue(undefined),
       schedule: jest.fn().mockResolvedValue(undefined),
       work: jest.fn().mockImplementationOnce((_name, handler) => handler()),
       send: jest.fn().mockResolvedValue('job-id'),

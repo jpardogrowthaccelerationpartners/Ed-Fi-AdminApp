@@ -45,6 +45,10 @@ export class SbSyncConsumer implements OnModuleInit {
   }
   public async onModuleInit() {
     try {
+      // pg-boss v12: queues must exist in pgboss.queue before schedule() or work() can reference them.
+      await this.jobQueue.createQueue(SYNC_SCHEDULER_CHNL);
+      await this.jobQueue.createQueue(ENV_SYNC_CHNL);
+      await this.jobQueue.createQueue(TENANT_SYNC_CHNL);
       await this.jobQueue.schedule(SYNC_SCHEDULER_CHNL, config.SB_SYNC_CRON, null, {
         tz: 'America/Chicago',
       });

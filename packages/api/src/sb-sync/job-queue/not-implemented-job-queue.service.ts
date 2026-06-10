@@ -23,6 +23,10 @@ export class NotImplementedJobQueueService implements IJobQueueService {
     return this.fail();
   }
 
+  createQueue(_name: string): Promise<void> {
+    return this.fail();
+  }
+
   send<T = object>(_queueName: string, _data: T | null, _options?: JobOptions): Promise<string> {
     return this.fail();
   }

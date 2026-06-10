@@ -34,6 +34,8 @@ export interface ScheduleOptions {
 export interface IJobQueueService {
   start(): Promise<void>;
   stop(options?: { graceful?: boolean; destroy?: boolean }): Promise<void>;
+  /** Ensure the named queue exists before scheduling or working on it (required by pg-boss v12). */
+  createQueue(name: string): Promise<void>;
   send<T = object>(queueName: string, data: T | null, options?: JobOptions): Promise<string>;
   schedule(
     queueName: string,

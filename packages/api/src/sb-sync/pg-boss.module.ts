@@ -1,6 +1,6 @@
 // pg-boss.module.ts
 import { Global, Injectable, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
-import PgBoss from 'pg-boss';
+import { PgBoss } from 'pg-boss';
 import { Client } from 'pg';
 import * as appConfig from 'config';
 
@@ -32,7 +32,7 @@ export class PgBossInstance extends PgBoss implements OnApplicationShutdown {
         clearInterval(this._recoveryTimer);
         this._recoveryTimer = undefined;
       }
-      await this.stop({ graceful: false, destroy: true });
+      await this.stop({ graceful: false });
     } catch {
       // ignore
     }
@@ -76,7 +76,7 @@ export class PgBossInstance extends PgBoss implements OnApplicationShutdown {
                 { code, queue }
               );
               try {
-                await boss.stop({ graceful: false, destroy: true });
+                await boss.stop({ graceful: false });
               } catch {
                 // ignore
               }

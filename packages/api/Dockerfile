@@ -52,6 +52,7 @@ WORKDIR /app
 
 # Copy package.json for npm prune
 COPY package*.json ./
+COPY packages/api/package.json ./packages/api/package.json
 
 # Copy all node_modules from build stage and prune dev dependencies
 COPY --from=build /app/node_modules ./node_modules

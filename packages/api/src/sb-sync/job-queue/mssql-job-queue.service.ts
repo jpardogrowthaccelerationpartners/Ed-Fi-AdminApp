@@ -109,6 +109,11 @@ export class MssqlJobQueueService
   }
 
   // Registers an in-process cron schedule — no DB persistence needed for v1 (D-10)
+  /** No-op for MSSQL: queue existence is implicit in the job_queue table (no separate queue registry). */
+  async createQueue(_name: string): Promise<void> {
+    // MSSQL job queue uses a flat job_queue table; no explicit queue creation step needed.
+  }
+
   async schedule(
     queueName: string,
     cron: string,

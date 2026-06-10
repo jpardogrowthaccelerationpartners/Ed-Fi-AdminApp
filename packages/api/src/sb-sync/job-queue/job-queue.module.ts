@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule, getDataSourceToken, getRepositoryToken } from '@nestjs/typeorm';
 import { JobQueue } from '@edanalytics/models-server';
 import config from 'config';
-import PgBoss from 'pg-boss';
+import { PgBoss } from 'pg-boss';
 import { DataSource, Repository } from 'typeorm';
 import { PgBossAdapter } from './pg-boss-adapter.service';
 import { MssqlJobQueueService } from './mssql-job-queue.service';
