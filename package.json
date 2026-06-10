@@ -36,7 +36,7 @@
     "@aws-sdk/client-lambda": "^3.1061.0",
     "@aws-sdk/client-secrets-manager": "^3.1061.0",
     "@aws-sdk/util-arn-parser": "^3.972.12",
-    "@casl/ability": "^6.8.1",
+    "@casl/ability": "^7.0.0",
     "@chakra-ui/icon": "^3.2.0",
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/layout": "^2.3.1",
