@@ -166,8 +166,8 @@ export class PostSbEnvironmentDto
   @Expose()
   @IsOptional()
   @MaxLength(2)
-  @IsIn(['v1', 'v2'])
-  version?: 'v1' | 'v2';
+  @IsIn(['v1', 'v2', 'v3'])
+  version?: 'v1' | 'v2' | 'v3';
 
   @Expose()
   @IsOptional()

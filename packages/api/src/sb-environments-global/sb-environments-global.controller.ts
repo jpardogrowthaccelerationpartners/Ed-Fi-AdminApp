@@ -45,7 +45,6 @@ import { IJobQueueService } from '../sb-sync/job-queue/job-queue.interface';
 import {
   CustomHttpException,
   determineTenantModeFromMetadata,
-  determineVersionFromMetadata,
   fetchAdminApiInfo,
   fetchOdsApiMetadata,
   throwNotFound,
@@ -204,9 +203,6 @@ export class SbEnvironmentsGlobalController {
     // Fetch ODS API metadata
     const odsApiMetaResponse = await fetchOdsApiMetadata({ odsApiDiscoveryUrl } as PostSbEnvironmentDto);
 
-    // Auto-detect version from metadata
-    const detectedVersion = determineVersionFromMetadata(odsApiMetaResponse);
-
     // Fetch Admin API info if URL provided (to get multitenantMode field)
     let adminApiInfo;
     if (adminApiUrl) {
@@ -235,7 +231,7 @@ export class SbEnvironmentsGlobalController {
     }
 
     return {
-      version: detectedVersion,
+      version: adminApiInfo ? adminApiInfo.specificationVersion : '',
       isMultiTenant: isMultiTenant
     };
   }

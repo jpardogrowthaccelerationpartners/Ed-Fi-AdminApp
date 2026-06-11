@@ -119,7 +119,7 @@ export const EditSbEnvironmentGlobalPage = () => {
 
     if (!sbEnvironment?.startingBlocks && normalizedUrl) {
         const result = await checkEdFiVersionAndTenantMode.mutateAsync(
-          { entity: { odsApiDiscoveryUrl: normalizedUrl }, pathParams: null },
+          { entity: { odsApiDiscoveryUrl: normalizedUrl, adminApiUrl: getValues('adminApiUrl') }, pathParams: null },
           {
             onSuccess: (result) => {
               if (result) {
@@ -128,14 +128,14 @@ export const EditSbEnvironmentGlobalPage = () => {
                 const version = response.version;
                 const isMultiTenant = response.isMultiTenant;
 
-                if (version === 'v1' || version === 'v2') {
+                if (version === 'v1' || version === 'v2' || version === 'v3') {
                   // Validate that the version hasn't changed
                   if (originalVersion && originalVersion !== version) {
                     setError('odsApiDiscoveryUrl', {
                       message: `Version mismatch: This environment was originally ${originalVersion} but the new URL returns ${version}. Version cannot be changed.`
                     });
                     return false;
-                  } else if (version === 'v2') {
+                  } else if (version === 'v2' || version === 'v3') {
                     // For v2, validate that tenant mode hasn't changed
                     const originalMultiTenant = sbEnvironment?.multiTenant;
                     if (originalMultiTenant !== undefined && originalMultiTenant !== isMultiTenant) {
@@ -201,7 +201,7 @@ export const EditSbEnvironmentGlobalPage = () => {
                 const response = result as { valid: boolean; message: string };
                 // If valid, just clear any existing errors - no other action needed
                 if (response.valid) {
-                  clearErrors(['adminApiUrl']);
+                  clearErrors(['adminApiUrl', 'odsApiDiscoveryUrl']);
                   return true;
                 }
               }

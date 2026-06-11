@@ -1,8 +1,6 @@
 import { Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import {
   determineTenantModeFromMetadata,
-  determineVersionFromMetadata,
-  fetchAdminApiInfo,
   fetchOdsApiMetadata,
   validateAdminApiUrl,
   validateTenantModeCompatibility,
@@ -169,8 +167,14 @@ export class SbEnvironmentsEdFiService {
           // Fetch ODS API metadata
           odsApiMetaResponse = await fetchOdsApiMetadata(createSbEnvironmentDto);
 
-          // Auto-detect version from metadata
-          detectedVersion = determineVersionFromMetadata(odsApiMetaResponse);
+          if (!adminApiInfo?.specificationVersion) {
+            throw new ValidationHttpException({
+              field: 'adminApiUrl',
+              message: 'Management API Discovery URL is required to determine API version.',
+            });
+          }
+
+          detectedVersion = adminApiInfo.specificationVersion;
 
           // Override the version with detected version
           createSbEnvironmentDto.version = detectedVersion;
