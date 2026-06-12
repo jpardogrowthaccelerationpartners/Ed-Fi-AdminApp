@@ -8,4 +8,14 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   setupFiles: ['<rootDir>/jest.setup.js'],
+  reporters: [
+     'default',
+     [
+       'jest-junit',
+       {
+         outputDirectory: './test-results',
+         outputName: 'junit-api.xml',
+       },
+     ],
+   ],
 };

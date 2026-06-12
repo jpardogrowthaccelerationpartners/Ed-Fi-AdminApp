@@ -64,3 +64,5 @@ vitest.config.*.timestamp*
 
 # certification - ignore the runtime folder where the downloaded artifact is extracted
 packages/api/certification/bruno/*
+
+test-results/

@@ -8,4 +8,14 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/packages/models-server',
+  reporters: [
+     'default',
+     [
+       'jest-junit',
+       {
+         outputDirectory: './test-results',
+         outputName: 'junit-models-server.xml',
+       },
+     ],
+   ],
 };

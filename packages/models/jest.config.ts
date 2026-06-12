@@ -7,4 +7,14 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/packages/models',
+  reporters: [
+     'default',
+     [
+       'jest-junit',
+       {
+         outputDirectory: './test-results',
+         outputName: 'junit-models.xml',
+       },
+     ],
+   ],
 };

@@ -9,4 +9,14 @@ export default {
   setupFiles: ['<rootDir>/jest.setup.js'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/packages/fe',
+  reporters: [
+     'default',
+     [
+       'jest-junit',
+       {
+         outputDirectory: './test-results',
+         outputName: 'junit-fe.xml',
+       },
+     ],
+   ],
 };
