@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
+name: UI Playwright E2E
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main, "patch-v*"]
+    paths:
+      - tests/e2e/**
+      - playwright.config.ts
+      - package.json
+      - package-lock.json
+      - compose/**
+      - packages/fe/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  playwright-e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Setup Node (from .nvmrc)
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Playwright browser dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Create local TLS certificate
+        run: bash ./compose/ssl/generate-certificate.sh
+
+      - name: Start Docker Compose services
+        shell: pwsh
+        run: |
+          cd compose
+          cp .env.example .env
+          ./start-services.ps1
+
+      - name: Wait for services to be healthy
+        run: |
+          for i in {1..30}; do
+            if curl -kfsS https://localhost/adminapp > /dev/null; then
+              echo "Admin app is ready."
+              exit 0
+            fi
+            echo "Waiting for admin app... ($i/30)"
+            sleep 10
+          done
+          echo "Admin app did not become ready in time."
+          exit 1
+
+      - name: Run Playwright BDD E2E tests
+        env:
+          CI: true
+        run: npm run test:e2e:bdd
+
+      - name: Upload E2E JUnit results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-junit-results
+          path: test-results/e2e
+          retention-days: 14
+
+      - name: Upload Allure raw results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-allure-results
+          path: test-results/allure-results
+          retention-days: 14
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-playwright-report
+          path: playwright-report
+          retention-days: 14
+
+      - name: Stop services
+        if: always()
+        shell: pwsh
+        run: ./compose/stop.ps1
