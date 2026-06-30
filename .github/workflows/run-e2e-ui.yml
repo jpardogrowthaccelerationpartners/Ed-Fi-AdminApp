@@ -54,7 +54,7 @@ jobs:
         run: |
           cd compose
           cp .env.example .env
-          ./start-services.ps1
+          ./start-local-dev-target.ps1 -V6 -OdsV7AdminV2 -IncludeAdminApp
 
       - name: Wait for services to be healthy
         run: |
