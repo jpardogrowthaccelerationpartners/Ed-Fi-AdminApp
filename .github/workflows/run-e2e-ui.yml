@@ -55,18 +55,17 @@ jobs:
           cd compose
           cp .env.example .env
           ./start-local-dev-target.ps1 -V6 -OdsV7AdminV2 -IncludeAdminApp
-
-      - name: Wait for services to be healthy
+      - name: Wait for Keycloak to be healthy
         run: |
-          for i in {1..30}; do
-            if curl -kfsS https://localhost/adminapp > /dev/null; then
-              echo "Admin app is ready."
+          for i in {1..40}; do
+            if curl -kfsS https://localhost/auth > /dev/null; then
+              echo "Keycloak is ready."
               exit 0
             fi
-            echo "Waiting for admin app... ($i/30)"
+            echo "Waiting for Keycloak... ($i/40)"
             sleep 10
           done
-          echo "Admin app did not become ready in time."
+          echo "Keycloak did not become ready in time."
           exit 1
 
       - name: Run Playwright BDD E2E tests
