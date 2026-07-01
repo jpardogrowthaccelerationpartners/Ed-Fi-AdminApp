@@ -15,6 +15,7 @@ const testDir = defineBddConfig({
 
 export default defineConfig({
   testDir,
+  retries: 1,
   reporter: [
     [ 'line' ],
     [ 'allure-playwright', { resultsDir: 'test-results/allure-results' } ],
