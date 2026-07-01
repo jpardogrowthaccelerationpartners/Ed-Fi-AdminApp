@@ -49,6 +49,9 @@ jobs:
       - name: Create local TLS certificate
         run: bash ./compose/ssl/generate-certificate.sh
 
+      - name: List SSl folder
+        run: ls -la ./compose/ssl
+
       - name: Start Docker Compose services
         shell: pwsh
         run: |
@@ -56,14 +59,17 @@ jobs:
           cp .env.example .env
           ./start-local-dev-target.ps1 -V6 -OdsV7AdminV2 -IncludeAdminApp
 
+      - name: Docker LIst
+        run: docker ps -a
+
       - name: Wait for Keycloak and Admin App
         run: |
-          for i in {1..40}; do
+          for i in {1..10}; do
             if curl -kfsS https://localhost/auth/ > /dev/null && curl -kfsS https://localhost/adminapp > /dev/null; then
               echo "Keycloak and Admin App are ready."
               exit 0
             fi
-            echo "Waiting for services... ($i/40)"
+            echo "Waiting for services... ($i/10)"
             sleep 10
           done
           echo "Services did not become ready in time."
@@ -71,8 +77,6 @@ jobs:
           exit 1
 
       - name: Run Playwright BDD E2E tests
-        env:
-          PLAYWRIGHT_CHROMIUM_ARGS: --ignore-certificate-errors
         run: npm run test:e2e:bdd
 
       - name: Upload E2E JUnit results
