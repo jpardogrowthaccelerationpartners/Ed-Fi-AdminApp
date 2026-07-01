@@ -134,8 +134,6 @@ foreach ($selectedTarget in $selectedTargets) {
         'v6' {
             @(
                 'v6-db-admin',
-                'v6-edfi-ods_255901',
-                'v6-edfi-ods_255902',
                 'v6-api',
                 'v6-adminapi'
             )
