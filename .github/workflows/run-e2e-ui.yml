@@ -58,7 +58,7 @@ jobs:
 
       - name: Run Playwright BDD E2E tests
         env:
-          CI: true
+          PLAYWRIGHT_CHROMIUM_ARGS: --ignore-certificate-errors
         run: npm run test:e2e:bdd
 
       - name: Upload E2E JUnit results
