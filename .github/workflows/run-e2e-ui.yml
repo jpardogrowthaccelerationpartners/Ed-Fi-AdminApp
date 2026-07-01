@@ -46,9 +46,6 @@ jobs:
       - name: Install Playwright browser dependencies
         run: npx playwright install --with-deps chromium
 
-      - name: Create local TLS certificate
-        run: bash ./compose/ssl/generate-certificate.sh
-
       - name: List SSl folder
         run: ls -la ./compose/ssl
 
@@ -57,10 +54,7 @@ jobs:
         run: |
           cd compose
           cp .env.example .env
-          ./start-local-dev-target.ps1 -V6 -OdsV7AdminV2 -IncludeAdminApp
-
-      - name: Docker LIst
-        run: docker ps -a
+          ./start-local-dev-target.ps1 -V6 -IncludeAdminApp
 
       - name: Wait for Keycloak and Admin App
         run: |
@@ -75,7 +69,10 @@ jobs:
           echo "Services did not become ready in time."
           docker compose -f compose/edfi-services.yml -f compose/nginx-compose.yml -f compose/adminapp-services.yml --env-file compose/.env ps
           exit 1
-
+          
+      - name: Docker LIst
+        run: docker ps -a
+        
       - name: Run Playwright BDD E2E tests
         run: npm run test:e2e:bdd
 
