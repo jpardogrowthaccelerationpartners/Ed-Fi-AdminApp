@@ -19,7 +19,7 @@
     "generate:icons": "./scripts/generateIcons.sh",
     "test:api": "nx run api:test",
     "test:fe": "nx run fe:test",
-    "test:e2e:bdd": "npx bddgen --config playwright.config.ts && npx playwright test",
+    "test:e2e:bdd": "npx bddgen --config=./playwright.config.ts && npx playwright test",
     "test:models-server": "nx run models-server:test",
     "test:utils": "nx run utils:test",
     "test:models": "nx run models:test",
