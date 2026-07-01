@@ -56,6 +56,20 @@ jobs:
           cp .env.example .env
           ./start-local-dev-target.ps1 -V6 -OdsV7AdminV2 -IncludeAdminApp
 
+      - name: Wait for Keycloak and Admin App
+        run: |
+          for i in {1..40}; do
+            if curl -kfsS https://localhost/auth/ > /dev/null && curl -kfsS https://localhost/adminapp > /dev/null; then
+              echo "Keycloak and Admin App are ready."
+              exit 0
+            fi
+            echo "Waiting for services... ($i/40)"
+            sleep 10
+          done
+          echo "Services did not become ready in time."
+          docker compose -f compose/edfi-services.yml -f compose/nginx-compose.yml -f compose/adminapp-services.yml --env-file compose/.env ps
+          exit 1
+
       - name: Run Playwright BDD E2E tests
         env:
           PLAYWRIGHT_CHROMIUM_ARGS: --ignore-certificate-errors
