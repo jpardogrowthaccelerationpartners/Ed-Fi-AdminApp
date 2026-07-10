@@ -197,12 +197,17 @@ If the `edfiadminapp-network` does not exist, it will be created automatically.
 
 1. Duplicate `.env.example` as `.env`; review and customize settings as needed.
 2. Create a self-signed certificate using `ssl/generate-certificate.sh` (Windows users can use WSL or Git-bash).
-3. Run the desired script:
+3. Place your own `EdFi.Ods.Minimal.Template.sql` and
+   `EdFi.Ods.Populated.Template.sql` backup files in the folder referenced by
+   `SQL_BACKUPS_FOLDER` in your `.env` (defaults to `compose/db-backup`). See
+   [ODS Database Image (compose/DB-Ods)](#ods-database-image-composedb-ods)
+   below.
+4. Run the desired script:
 
    - For local development: `./start-local-dev.ps1`; use `./start-local-dev.ps1 -MSSQL` for using SQL Server to store the Admin App tables
    - For main services: `./start-services.ps1 [-Rebuild]`
 
-4. To stop services, use the `stop.ps1` script with the following options:
+5. To stop services, use the `stop.ps1` script with the following options:
 
    - Stop local development services: `./stop.ps1 -LocalDev`
    - Stop main services: `./stop.ps1 -MainServices`
@@ -213,9 +218,52 @@ If the `edfiadminapp-network` does not exist, it will be created automatically.
 > The scripts will automatically create the `edfiadminapp-network` if it does not exist.
 > Make sure the `logs` directory exists before starting services.
 
-### Choosing a Database Template
+### ODS Database Image (compose/DB-Ods)
 
-The ODS database can use the "sandbox" or "minimal" container. When using the sandbox image, you must login to the server (e.g. using PgAdmin) and create a new `EdFi_Ods_??` database, choosing either the populated or minimal template.
+Every `odsV7-*-db-ods` container (single-tenant and multi-tenant, Admin API v2
+and v3) is built locally from `compose/DB-Ods` instead of pulling an image
+from Docker Hub. On first run, the container's `init.sh` entrypoint:
+
+1. Restores your own `.sql` backup files into two Postgres template
+   databases, `Ods_Minimal_Template` and `Ods_Populated_Template`.
+2. Creates the real `EdFi_Ods` database as a fast filesystem-level clone
+   (`CREATE DATABASE ... TEMPLATE ...`) of one of those templates.
+
+You must provide your own backup files — they are **not** included in this
+repo. Configure the following in your `.env` file:
+
+Typical source: Azure Artifacts (NuGet packages for Ed-Fi ODS templates). For
+example:
+
+- Minimal template:
+  <https://dev.azure.com/ed-fi-alliance/Ed-Fi-Alliance-OSS/_artifacts/feed/EdFi/NuGet/EdFi.Suite3.Ods.Minimal.Template.PostgreSQL.Standard.4.0.0/overview/7.3.20068>
+- Populated template:
+  <https://dev.azure.com/ed-fi-alliance/Ed-Fi-Alliance-OSS/_artifacts/feed/EdFi/NuGet/EdFi.Suite3.Ods.Populated.Template.PostgreSQL.Standard.4.0.0/overview/7.3.20068>
+
+> [!NOTE]
+> Data Standard and package version may vary by environment/release. Download
+> the matching Minimal and Populated template versions for your target stack,
+> then place both `.sql` files in your `SQL_BACKUPS_FOLDER`.
+
+- **`SQL_BACKUPS_FOLDER`**: host path to a folder containing
+  `EdFi.Ods.Minimal.Template.sql` and `EdFi.Ods.Populated.Template.sql`. This
+  folder is bind-mounted read-only into every ODS DB container.
+- **`MINIMAL_SQL_PATH`** / **`POPULATED_SQL_PATH`**: in-container paths to
+  those two files (defaults match the bind-mount location; you normally do
+  not need to change these).
+- **`EDFI_ODS_DATASET`**: `minimal` (default) or `populated` — selects which
+  template `EdFi_Ods` is cloned from.
+
+These four variables are shared by all six `odsV7-*-db-ods` containers, so
+every topology restores from the same backup files and dataset choice.
+
+> [!NOTE]
+> To rebuild the custom image after changing `compose/DB-Ods/Dockerfile` or
+> `init.sh`, pass `-Rebuild` to `start-services.ps1`/`start-local-dev.ps1`, or
+> run `docker compose -f edfi-services.yml build <service-name>` directly.
+> To restore from scratch (e.g. after changing `EDFI_ODS_DATASET`), remove the
+> container's data volume first (see `stop.ps1 -V`), since `init.sh` only
+> restores data on first run.
 
 ### Setup Ods Instances
 

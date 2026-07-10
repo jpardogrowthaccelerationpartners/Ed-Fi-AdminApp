@@ -14,6 +14,14 @@ Two differences to highlight:
 
 Use the [compose/readme.md](../compose/readme.md) to start the main services, using the `.\start-local-dev.ps1` command.
 
+> [!NOTE]
+> The `odsV7-*-db-ods` containers are built locally and restore ODS data from
+> your own `.sql` backup files on first run. Before starting services for the
+> first time, see
+> [compose/readme.md#ods-database-image-composedb-ods](../compose/readme.md#ods-database-image-composedb-ods)
+> to configure `SQL_BACKUPS_FOLDER` and provide `EdFi.Ods.Minimal.Template.sql`
+> / `EdFi.Ods.Populated.Template.sql`.
+
 Once you have the services running, the Keycloak client `edfiadminapp-dev` will be created automatically during the Keycloak setup process. For details, see [compose/readme.md#setup-keycloak](../compose/readme.md#setup-keycloak).
 
 ### Setup Local Configuration for Admin App
