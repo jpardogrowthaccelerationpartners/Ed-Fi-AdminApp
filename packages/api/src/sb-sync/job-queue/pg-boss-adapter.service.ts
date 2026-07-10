@@ -2,6 +2,18 @@ import { Injectable, NotFoundException, OnApplicationShutdown } from '@nestjs/co
 import { PgBoss } from 'pg-boss';
 import { IJobQueueService, Job, JobOptions, ScheduleOptions } from './job-queue.interface';
 
+type PgBossMetadataJob<T = object> = {
+  id: string;
+  name: string;
+  data: T;
+  state: Job['state'];
+  createdOn: Date;
+  startedOn?: Date;
+  completedOn?: Date | null;
+  output?: unknown;
+  retryCount?: number;
+};
+
 @Injectable()
 export class PgBossAdapter implements IJobQueueService, OnApplicationShutdown {
   private readonly queueNamesByJobId = new Map<string, string>();
@@ -90,16 +102,17 @@ export class PgBossAdapter implements IJobQueueService, OnApplicationShutdown {
       { includeMetadata: true },
       async (pgJobs) => {
         for (const pgJob of pgJobs) {
+          const metadataJob = pgJob as unknown as PgBossMetadataJob<T>;
           await handler({
-            id: pgJob.id,
-            name: pgJob.name,
-            data: pgJob.data,
-            state: pgJob.state,
-            createdon: pgJob.createdOn,
-            startedon: pgJob.startedOn,
-            completedon: pgJob.completedOn ?? undefined,
-            output: pgJob.output,
-            retrycount: pgJob.retryCount,
+            id: metadataJob.id,
+            name: metadataJob.name,
+            data: metadataJob.data,
+            state: metadataJob.state,
+            createdon: metadataJob.createdOn,
+            startedon: metadataJob.startedOn,
+            completedon: metadataJob.completedOn ?? undefined,
+            output: metadataJob.output,
+            retrycount: metadataJob.retryCount,
           });
         }
       }
