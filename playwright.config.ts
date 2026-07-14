@@ -26,7 +26,7 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
     launchOptions: {
-      slowMo: 300,
+      slowMo: 500,
     },
   },
   projects: [
@@ -42,7 +42,7 @@ export default defineConfig({
     {
       name: 'chromium',
       dependencies: ['setup'],
-      testIgnore: /(login-page\/login\.feature\.spec\.js|environments-page\/.*\.feature\.spec\.js)/,
+      testIgnore: /(login-page\/login\.feature\.spec\.js)/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/user.json',
