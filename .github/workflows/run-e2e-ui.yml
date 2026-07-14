@@ -59,7 +59,7 @@ jobs:
         shell: pwsh
         run: |
           cp .env.example .env
-          ../eng/github-actions/start-services-target.ps1 -V6 -IncludeAdminApp -Rebuild
+          ../eng/github-actions/start-services-target.ps1 -V6 -odsV7-adminV2 -IncludeAdminApp -Rebuild
 
       - name: Wait for Admin App API and FE
         run: |
