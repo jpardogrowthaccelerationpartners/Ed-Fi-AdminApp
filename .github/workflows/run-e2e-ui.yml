@@ -135,18 +135,6 @@ jobs:
           path: test-results
           retention-days: 5
 
-      - name: Checkout gh-pages branch
-        if: always()
-        continue-on-error: true
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Prepare gh-pages folder
-        if: always()
-        run: mkdir -p gh-pages
-
       - name: Generate Allure report
         if: always()
         uses: simple-elf/allure-report-action@master
@@ -163,6 +151,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: allure-history
+          force_orphan: true
           
       - name: Stop services
         if: always()
