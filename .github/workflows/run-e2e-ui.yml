@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [main, "patch-v*"]
+    branches: [main, 'patch-v*']
     paths:
       - .github/workflows/run-e2e-ui.yml
       - tests/e2e/**
@@ -30,7 +30,7 @@ permissions:
   actions: read
   checks: write
   pull-requests: write
-  
+
 jobs:
   playwright-e2e:
     runs-on: ubuntu-latest
@@ -58,12 +58,46 @@ jobs:
         working-directory: ./compose/ssl
         run: bash ./generate-certificate.sh
 
+      - name: Download ODS Minimal Template backup
+        run: |
+          set -euo pipefail
+
+          PACKAGE_NAME="EdFi.Suite3.Ods.Minimal.Template.PostgreSQL.Standard.4.0.0"
+          PACKAGE_VERSION="7.3.20068"
+          FEED_URL="https://pkgs.dev.azure.com/ed-fi-alliance/Ed-Fi-Alliance-OSS/_packaging/EdFi/nuget/v3/flat2/${PACKAGE_NAME}/${PACKAGE_VERSION}/${PACKAGE_NAME}.${PACKAGE_VERSION}.nupkg"
+          BACKUP_DIR="compose/db-backup"
+          SQL_FILE="EdFi.Ods.Minimal.Template.sql"
+
+          mkdir -p "$BACKUP_DIR"
+
+          echo "Downloading ${PACKAGE_NAME} v${PACKAGE_VERSION}..."
+          curl -fsSL "$FEED_URL" -o "${BACKUP_DIR}/package.nupkg"
+
+          echo "Extracting package..."
+          cp "${BACKUP_DIR}/package.nupkg" "${BACKUP_DIR}/package.zip"
+          unzip -q "${BACKUP_DIR}/package.zip" -d "${BACKUP_DIR}/pkg"
+
+          echo "Locating SQL backup file inside package..."
+          SRC_SQL=$(find "${BACKUP_DIR}/pkg" -name "*.sql" | head -n 1)
+          if [ -z "$SRC_SQL" ]; then
+            echo "ERROR: No .sql file found inside the NuGet package"
+            exit 1
+          fi
+          echo "Found: $SRC_SQL"
+
+          cp "$SRC_SQL" "${BACKUP_DIR}/${SQL_FILE}"
+          cp "${BACKUP_DIR}/${SQL_FILE}" "${BACKUP_DIR}/EdFi.Ods.Populated.Template.sql"
+
+          rm -rf "${BACKUP_DIR}/package.nupkg" "${BACKUP_DIR}/package.zip" "${BACKUP_DIR}/pkg"
+          echo "Backup files ready in ${BACKUP_DIR}:"
+          ls -lh "${BACKUP_DIR}"
+
       - name: Start Docker Compose services
         working-directory: ./compose
         shell: pwsh
         run: |
           cp .env.example .env
-          ../eng/github-actions/start-services-target.ps1 -IncludeAdminApp -Rebuild
+          ../eng/github-actions/start-services-target.ps1 -V6 -OdsV7AdminV2 -IncludeAdminApp -Rebuild
 
       - name: Wait for Admin App API and FE
         run: |
@@ -129,7 +163,7 @@ jobs:
         env:
           CI: true
           PLAYWRIGHT_CHROMIUM_ARGS: --ignore-certificate-errors
-        run: npx bddgen --config=./playwright.config.ts && npx playwright test main.feature
+        run: npm run test:e2e:bdd
 
       - name: Upload Allure and JUnit results
         if: always()
@@ -147,7 +181,7 @@ jobs:
           path: test-results/e2e/junit-e2e-bdd.xml
           reporter: java-junit
           fail-on-empty: false
-          
+
       - name: Stop services
         if: always()
         shell: pwsh
