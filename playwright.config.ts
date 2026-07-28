@@ -26,7 +26,7 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
     launchOptions: {
-      slowMo: 380,
+      slowMo: 100,
     },
   },
   projects: [
