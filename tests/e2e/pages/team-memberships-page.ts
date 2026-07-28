@@ -137,6 +137,7 @@ class TeamMembershipsPage {
   async prepareDeleteFromTable() {
     await this.page.getByRole('textbox', { name: 'Search' }).first().fill('teamMember')
     await this.page.getByRole('textbox', { name: 'Search' }).first().press('Enter')
+    await this.page.waitForLoadState('networkidle')
     await this.captureFirstMembershipName()
   }
 
