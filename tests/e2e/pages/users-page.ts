@@ -111,6 +111,7 @@ class UsersPage {
     if (userType === 'Human') {
       await this.page.getByRole('textbox', { name: 'Search' }).first().fill('UserACopy')
       await this.page.getByRole('textbox', { name: 'Search' }).first().press('Enter')
+      await this.page.waitForLoadState('networkidle')
       const table = this.page.locator('table').nth(0)
       await expect(table.locator('td')).not.toBeVisible()
 
