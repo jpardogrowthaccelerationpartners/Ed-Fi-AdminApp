@@ -8,6 +8,7 @@ on:
   release:
     types:
       - prereleased
+  workflow_dispatch:
 
 env:
   # ARTIFACTS_API_KEY, NPM_REGISTRY, PACKAGE_NAME are intended for use by the Ed-Fi
@@ -146,7 +147,7 @@ jobs:
 
   sbom-create:
     name: Create SBOM
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: pack
     permissions:
       actions: write  # Required for artifact upload (line 165)
@@ -187,7 +188,7 @@ jobs:
 
   sbom-attach:
     name: Attach SBOM file
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - sbom-create
       - pack
@@ -229,7 +230,7 @@ jobs:
 
   validate-packages:
     name: Validate npm packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: pack
     permissions:
       actions: read
@@ -348,7 +349,7 @@ jobs:
 
   docker-publish:
     name: Publish to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - pack
     steps:
