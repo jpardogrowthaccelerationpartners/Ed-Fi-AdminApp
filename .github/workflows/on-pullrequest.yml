@@ -29,7 +29,7 @@ jobs:
 
   setup:
     name: Setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -46,7 +46,7 @@ jobs:
   code_analysis:
     name: Code Analysis (CodeQL & Dependency Review)
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       security-events: write
     steps:
@@ -77,7 +77,7 @@ jobs:
   lint:
     name: Prettier Check
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -100,7 +100,7 @@ jobs:
   build_and_test:
     name: Build & Test (${{ matrix.package }})
     needs: lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -150,7 +150,7 @@ jobs:
 
   docker_analysis:
     name: Docker Analysis
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -170,7 +170,7 @@ jobs:
 
   compose_config:
     name: Compose Config Validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Reads files and runs a parser; needs no API access and no git credential.
     permissions: {}
     steps:
@@ -189,7 +189,7 @@ jobs:
 
   event_file:
     name: "Event File"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
